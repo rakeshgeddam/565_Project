@@ -1,0 +1,10 @@
+unsigned a,b
+signed c,d
+a = 5
+c = -1
+while a < c
+    a = a + 1
+    if c > 1
+        c = a + c
+    else 
+        a = c - a
