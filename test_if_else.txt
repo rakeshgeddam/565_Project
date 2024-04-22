@@ -1,0 +1,8 @@
+unsigned a,b
+signed c,d
+a = 5
+c = -1
+if a  < 5
+    c = c + 1
+else
+    a = 10
