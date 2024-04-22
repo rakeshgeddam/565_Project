@@ -3,8 +3,11 @@ from data import *
 import math
 import Memory as M
 import csv
-import pandas as pd
 m = M.Memory()
+
+filename = None
+if len(sys.argv) > 1:
+    filename = sys.argv[1]
 
 #===========================================
 #  1. Function Name: setAddress  
@@ -239,7 +242,7 @@ def assembly_encoding(line,address):
     for i in hlc_to_assembly:
         if line in i:
             hlc_code = hlc_to_assembly[i]
-    output["HLC instruction"].append(hlc_code)
+    output["HLC instruction"].append(hlc_code[:-1])
     if "Loop" in line or "if_block" in line or "else_block" in line:
         if ":" in line:
             line = line.split(":")[1].strip()
@@ -330,7 +333,9 @@ def assembly_encoding(line,address):
     output["YMC ENCODING"].append(ymc_encoding)
     output["Modified Registers"].append(modified_reg)
     return f"{operation} || {operand1} || {operand2}" #line.split(" ")#format(operation,'x')
-content = readFile("test.txt")
+if filename == None :
+    filename = "test.txt"
+content = readFile(filename)
 instruction_address = []
 lines = content.split("\n")
 
@@ -343,10 +348,10 @@ for idx,line in enumerate(lines):
     address = instruction_address[idx]
 #    print(address,"====>",line,"===>",assembly_encoding(line,address))
     assembly_encoding(line,address)
-print(variables_dictionary)
-print(label_address)
-print(hlc_to_assembly)
-print(output)
+# print(variables_dictionary)
+# print(label_address)
+# print(hlc_to_assembly)
+# print(output)
 def dict_to_csv(dictionary, filename):
     keys = list(dictionary.keys())
     values = list(dictionary.values())
@@ -356,14 +361,14 @@ def dict_to_csv(dictionary, filename):
         writer.writerow(keys)
         writer.writerows(zip(*values))
 
-def dict_of_lists_to_csv(dictionary, filename, delimiter='|'):
-    df = pd.DataFrame.from_dict(dictionary)
-    df.to_csv(filename, sep=delimiter, index=False, quoting=csv.QUOTE_MINIMAL)
+# def dict_of_lists_to_csv(dictionary, filename, delimiter='|'):
+#     df = pd.DataFrame.from_dict(dictionary)
+#     df.to_csv(filename, sep=delimiter, index=False, quoting=csv.QUOTE_MINIMAL)
 
 
 for i in output:
     if i not in ['YMC ENCODING','Modified Registers', 'Modified flags']:
         output[i] = output[i][:-1]
-    print(i , len(output[i]))
+    #print(i , len(output[i]))
 
-dict_of_lists_to_csv(output,'ouptut.csv','|')
+dict_to_csv(output,'output.csv')
